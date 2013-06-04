@@ -25,6 +25,26 @@ The above example defines a controller and registers it within the Grails contex
 
 Actions should return a JavaScript object representing the model. This return object will be coerced to a Map before being delegated to the view.
 
+Once you have a JavaScript controller built and registered within the ApplicationContainer, you must also register it with the JavaScript execution environment. Scripts are resolved relative to the `web-app/WEB-INF/js.controllers` directory and can be registered by using the `register(String)` method off of the `JsControllersApplicationContainer` class. Accessing this class must be performed through dependency injection or application context lookup.
+
+For example, you may register a JavaScript controller at application initialization from your `BootStrap.groovy` class:
+
+```groovy
+class BootStrap {
+
+    def grailsApplication
+
+    def init = { servletContext ->
+        def container = grailsApplication.mainContext.getBean(JsControllersApplicationContainer)
+        container.register("payment.controller.js")
+    }
+    def destroy = {
+    }
+}
+```
+
+This registration process can also be performed dynamically and at runtime. As long as each JavaScript controller registers itself within the `ApplicationContainer`, and follows the conventions outlined above, the controllers will be resolved for otherwise unmapped urls.
+
 Parameters
 ---
 Each controller action should take a single argument. This argument is a Map of the parameters from the request. Parameters need to be explicitly retrieved and set, as the following example demonstrates.
@@ -104,3 +124,23 @@ And the GSP `views/payment/index.gsp`:
 ```
 
 We see a H1 rendered with "Payment Controller", just as you would expect. Sitemeshing, TagLibs, and Resources also work as expected.
+
+Using Libraries
+---
+The plugin allows you to leverage additional libraries within your JavaScript controllers. It is important to note that the JavaScript execution environment is different from the Grails application. That means that resources that are to be made accessible for your JavaScript controllers ___must___ be explicitly registered.
+
+Registering a script is as s
+
+Caveats
+---
+Some caveats to using JavaScript controllers is that the Groovy-enriched objects from the Grails context don't translate so well. That means that trying to leverage things like Domain class dynamic finders or other MOP methods/properties will not work.
+
+The best workaround (and probably best way of handling this in general) is let call a service class method that calls into MOP methods, or retrieves data with GORM.
+
+License
+---
+Apache, or whatever. I mean... feel free to hack it up and change it all you want.
+
+Author
+---
+Dan Woods, the man. t{ [@danveloper](http://twitter.com/danveloper) } g{ [danielpwoods@gmail.com](mailto:daniel.p.woods@gmail.com) }
