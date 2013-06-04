@@ -21,7 +21,7 @@ In the same way that Grails controllers are little more than (albeit enhanced) G
     
 ```
 
-The above example defines a controller and registers it to be handled in the Grails context as a controller. The key to the mapping is the first parameter to the `register`, which defines the path within the web application context that is to be handled by this controller. In this example, requests to "/payment/index" will delegate to the `index` function of the `PaymentController` class.
+The above example defines a controller and registers it to be handled in the Grails context as a controller. The key to the mapping is the first parameter to the `register` method, which defines the path within the web application context that is to be handled by this controller. In this example, requests to ''/payment/index'' will delegate to the `index` function of the `PaymentController` class.
 
 Controllers should return a JavaScript object representing the model. This return object will be coerced to a Java Map before being delegated to the view.
 
