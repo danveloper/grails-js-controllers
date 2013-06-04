@@ -1,8 +1,8 @@
 <plugin name='js-controllers' version='1.0-SNAPSHOT' grailsVersion='2.0 &gt; *'>
-  <author>Your name</author>
-  <title>Js Controllers Plugin</title>
-  <description>Brief summary/description of the plugin.
-</description>
+  <author>Daniel Woods</author>
+  <authorEmail>daniel.p.woods@gmail.com</authorEmail>
+  <title>JavaScript Controller Plugin</title>
+  <description>Plugin to allow for handling controller actions in JavaScript</description>
   <documentation>http://grails.org/plugin/js-controllers</documentation>
   <type>JsControllersGrailsPlugin</type>
   <resources />

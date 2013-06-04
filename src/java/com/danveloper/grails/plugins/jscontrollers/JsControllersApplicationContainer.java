@@ -1,6 +1,7 @@
 package com.danveloper.grails.plugins.jscontrollers;
 
 import org.codehaus.groovy.grails.commons.GrailsApplication;
+import org.codehaus.groovy.grails.plugins.GrailsPluginManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,17 +18,20 @@ import java.util.List;
  */
 @Service
 public class JsControllersApplicationContainer {
-    @Autowired
-    GrailsApplication grailsApplication;
-    @Autowired
-    ServletContext servletContext;
-
-    private ScriptEngine engine;
-
     public static final String SPRING_BEAN_ID = "jsControllerApplicationContainer";
-    public static final String APPLICATION_SCRIPT_NAME = "application.container.js";
     public static final String DISPATCHER_ID = "Dispatcher";
+
     public static final String CONTROLLER_DIR = "web-app/WEB-INF/js.controllers";
+    public static final String APPLICATION_SCRIPT_NAME = "application.container.js";
+
+    @Autowired
+    protected GrailsApplication grailsApplication;
+    @Autowired
+    protected ServletContext servletContext;
+    @Autowired
+    protected GrailsPluginManager pluginManager;
+
+    protected ScriptEngine engine;
 
     @PostConstruct
     public void init() {
@@ -39,7 +43,7 @@ public class JsControllersApplicationContainer {
         Bindings bindings = engine.createBindings();
         engine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
-        register(APPLICATION_SCRIPT_NAME);
+        register("classpath:/js.controllers/"+APPLICATION_SCRIPT_NAME);
 
         List<String> beanNames = Arrays.asList(grailsApplication.getMainContext().getBeanDefinitionNames());
         for (String beanName : beanNames) {
@@ -54,30 +58,28 @@ public class JsControllersApplicationContainer {
      */
     public void register(String scriptName) {
         if (scriptName.startsWith("classpath:")) {
-            register(scriptName, this.getClass().getClassLoader());
-        } else {
             try {
-                InputStream inputStream = new FileInputStream(new File((getBaseDir()+scriptName)));
+                InputStream inputStream = getClass().getResourceAsStream(scriptName.replaceAll("^classpath:",""));
                 engine.eval(new InputStreamReader(inputStream));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             } catch (ScriptException e) {
                 throw new RuntimeException(e);
             }
+        } else {
+            register(scriptName, getBaseDir());
         }
     }
 
     /**
-     * Will resolve a script from the classpath, using a provided {@link ClassLoader} class to resolve the resource.
-     *
-     * @param scriptName - Does <b>NOT</b> take a prepended "classpath:".
-     * @param classLoader
-     * @return
+     * Will evaluate and register a script within the the JavaScript execution context. Additional parameter of specifying a non-standard base directory to find the script
+     * @param scriptName
+     * @param baseDir
      */
-    public Object register(String scriptName, ClassLoader classLoader) {
+    public void register(String scriptName, String baseDir) {
         try {
-            InputStream inputStream = classLoader.getClass().getResourceAsStream(scriptName);
-            return engine.eval(new InputStreamReader(inputStream));
+            InputStream inputStream = new FileInputStream(new File((baseDir+scriptName)));
+            engine.eval(new InputStreamReader(inputStream));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         } catch (ScriptException e) {
             throw new RuntimeException(e);
         }
