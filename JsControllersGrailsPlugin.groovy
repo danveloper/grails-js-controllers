@@ -1,8 +1,14 @@
+import com.danveloper.grails.plugins.jscontrollers.GrailsJsControllersHandlerMapping
+import com.danveloper.grails.plugins.jscontrollers.GrailsJsSpringController
+import com.danveloper.grails.plugins.jscontrollers.JsControllersApplicationContainer
+import com.danveloper.grails.plugins.jscontrollers.JsControllersFilter
+import com.danveloper.grails.plugins.jscontrollers.JsControllersRequestDispatcher
+
 class JsControllersGrailsPlugin {
     // the plugin version
-    def version = "0.1"
+    def version = "1.0-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "2.2 > *"
+    def grailsVersion = "2.0 > *"
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
         "grails-app/views/error.gsp"
@@ -36,12 +42,49 @@ Brief summary/description of the plugin.
     // Online location of the plugin's browseable source code.
 //    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
 
-    def doWithWebDescriptor = { xml ->
-        // TODO Implement additions to web.xml (optional), this event occurs before
+    def doWithWebDescriptor = { webXml ->
+        def mappingElement = webXml.'servlet-mapping'
+        mappingElement = mappingElement[mappingElement.size() - 1]
+
+        mappingElement + {
+            'servlet-mapping' {
+                'servlet-name'("grails")
+                'url-pattern'("*.jscontroller")
+            }
+        }
+
+        def contextParam = webXml.'context-param'
+
+        contextParam[contextParam.size() - 1] + {
+            'filter' {
+                'filter-name'('jsControllersFilter')
+                'filter-class'(JsControllersFilter.name)
+            }
+        }
+
+        def filter = webXml.'filter'
+        filter[filter.size() - 1] + {
+            'filter-mapping'{
+                'filter-name'('jsControllersFilter')
+                'url-pattern'('/*')
+            }
+        }
     }
 
     def doWithSpring = {
-        // TODO Implement runtime spring config (optional)
+        "${JsControllersApplicationContainer.SPRING_BEAN_ID}"(JsControllersApplicationContainer)
+
+        jsControllersRequestDispatcher(JsControllersRequestDispatcher) {
+            jsControllersApplicationContainer = ref(JsControllersApplicationContainer.SPRING_BEAN_ID)
+        }
+
+        grailsJsSpringController(GrailsJsSpringController) {
+            dispatcher = ref('jsControllersRequestDispatcher')
+        }
+
+
+        jsControllerHandlerMapping(GrailsJsControllersHandlerMapping)
+
     }
 
     def doWithDynamicMethods = { ctx ->

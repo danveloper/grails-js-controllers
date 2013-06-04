@@ -9,3 +9,8 @@ classes/
 
 .classpath
 .project
+
+.DS_Store
+*.zip
+*.zip.*
+target/
