@@ -27,7 +27,7 @@ public class JsControllersApplicationContainer {
     public static final String SPRING_BEAN_ID = "jsControllerApplicationContainer";
     public static final String APPLICATION_SCRIPT_NAME = "application.container.js";
     public static final String DISPATCHER_ID = "Dispatcher";
-    public static final String CONTROLLER_DIR = "web-app/WEB-INF/js-controllers";
+    public static final String CONTROLLER_DIR = "web-app/WEB-INF/js.controllers";
 
     @PostConstruct
     public void init() {
