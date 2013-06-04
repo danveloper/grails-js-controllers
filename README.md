@@ -43,6 +43,8 @@ class BootStrap {
 }
 ```
 
+You can think about registration as a two-step process: the first step is to register your script within the JavaScript execution context; the second step is to have your script register itself with the ApplicationContainer.
+
 This registration process can also be performed dynamically and at runtime. As long as each JavaScript controller registers itself within the `ApplicationContainer`, and follows the conventions outlined above, the controllers will be resolved for otherwise unmapped urls.
 
 Parameters
