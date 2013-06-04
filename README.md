@@ -9,16 +9,16 @@ In the same way that Grails controllers are little more than (albeit enhanced) G
 
 ```javascript
 
-    function PaymentController() {
+function PaymentController() {
 
-        this.index = function(params) {
-            return {foo: 'bar', c: "payment"};
-        }
+	this.index = function(params) {
+	    return {foo: 'bar', c: "payment"};
+	}
 
-    }
-    
-    ApplicationContainer.register("payment.controller", PaymentController, { scope: "prototype" });
-    
+}
+
+ApplicationContainer.register("payment.controller", PaymentController, { scope: "prototype" });
+
 ```
 
 The above example defines a controller and registers it to be handled in the Grails context as a controller. The key to the mapping is the first parameter to the `register` method, which defines the path within the web application context that is to be handled by this controller. In this example, requests to **/payment/index** will delegate to the `index` function of the `PaymentController` class.
@@ -30,13 +30,13 @@ Parameters
 Each controller action should take a single argument. This argument is a Map of the parameters from the request. Parameters need to be explicitly retrieved and set, as the following example demonstrates.
 
 ```javascript
-    function PaymentController() {
+function PaymentController() {
 
-        this.index = function(params) {
-            return {foo: 'bar', c: "payment", name: params.get("name")};
-        }
-
+    this.index = function(params) {
+        return {foo: 'bar', c: "payment", name: params.get("name")};
     }
+
+}
 ```
 
 While the params object allows for explicit `get` and `put` operations, it also allows you direct access to the `request` object from within your JavaScript controller action. The request object is an instance of an HttpServletRequest and can be treated as such.
@@ -80,18 +80,18 @@ Nothing special needs to be done to make GSPs work with JavaScript controllers. 
 Given the `PaymentController`:
 
 ```javascript
-    function PaymentController() {
+function PaymentController() {
 
-        this.index = function(params) {
-            return {name: "Payment Controller"};
-        }
-
+    this.index = function(params) {
+        return {name: "Payment Controller"};
     }
+
+}
 ```
 
 And the GSP `views/payment/index.gsp`:
 
-```gsp
+```jsp
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
