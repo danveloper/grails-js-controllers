@@ -24,8 +24,15 @@ class GrailsJsSpringController implements Controller {
         GrailsWebRequest webRequest = (GrailsWebRequest)ra;
 
         webRequest.with {
-            Map model = (Map)dispatcher.dispatch(controllerName, actionName, params);
-            new ModelAndView("/${controllerName}/${actionName}", model);
+            params.put "out", out
+
+            Object result = dispatcher.dispatch(controllerName, actionName, params);
+
+            if (result != null) {
+                new ModelAndView("/${controllerName}/${actionName}", (Map)result);
+            } else {
+                null
+            }
         }
     }
 }

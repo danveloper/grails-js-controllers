@@ -56,7 +56,21 @@ var Dispatcher = {
 
     dispatch: function(name, action, params) {
         var controller = ApplicationContainer.getBean(name + this.SUFFIX);
-        return controller[action](params);
+
+        var toContinue = true;
+        try {
+            var interceptResult = controller.beforeInterceptor(params);
+            if (interceptResult === false) toContinue = interceptResult;
+        } catch (e) {}
+
+        if (toContinue) {
+            var actionResult = controller[action](params);
+            try {
+                controller.afterInterceptor(params);
+            } catch (e) {}
+
+            return actionResult;
+        }
     },
 
     isHandled: function(name) {
