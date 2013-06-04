@@ -1,7 +1,7 @@
 Grails JavaScript Controller Plugin
 =====================
 
-This plugin offers developers the ability to write classes in JavaScript, and have Grails respect them as controllers. The default path from which to resolve controllers is the web-app/WEB-INF/js.controllers directory. This directory is automatically created at plugin installation time.
+This plugin offers developers the ability to write classes in JavaScript, and have Grails respect them as controllers. The default path from which to resolve controllers is the `web-app/WEB-INF/js.controllers` directory. This directory is automatically created at plugin installation time.
 
 Controllers
 ---
