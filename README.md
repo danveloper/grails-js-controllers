@@ -21,9 +21,9 @@ ApplicationContainer.register("payment.controller", PaymentController, { scope: 
 
 ```
 
-The above example defines a controller and registers it to be handled in the Grails context as a controller. The key to the mapping is the first parameter to the `register` method, which defines the path within the web application context that is to be handled by this controller. In this example, requests to **/payment/index** will delegate to the `index` function of the `PaymentController` class.
+The above example defines a controller and registers it within the Grails context. The key to the mapping is the first parameter to the `register` method, which declared the path that is to be handled by this controller. JavaScript controllers are resolved by convention given a **.controller** suffix. In this example, requests to **/payment/index** will delegate to the `index` function of the `PaymentController` class. All JavaScript controllers must register themselves as `path`.`controller` within the `ApplicationContainer`.
 
-Controllers should return a JavaScript object representing the model. This return object will be coerced to a Java Map before being delegated to the view.
+Actions should return a JavaScript object representing the model. This return object will be coerced to a Map before being delegated to the view.
 
 Parameters
 ---
