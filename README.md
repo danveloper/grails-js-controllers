@@ -43,7 +43,7 @@ While the params object allows for explicit `get` and `put` operations, it also 
 
 Services
 ---
-The JavaScript controller context exposes access to the beans from the Grails context. This means that the JavaScript controller has access to the extent of the Grails application context. Accessing services or other controllers is as simple as directly accessing the "wired" bean. Beans are wired into the JavaScript execution context by name, so referencing them from the controller should be handled as regular property accesses.
+The plugin exposes the beans from the Grails application to the JavaScript controllers. This means that the JavaScript controller has access to the extent of the Grails application context. Accessing services or other controllers is as simple as directly accessing the "wired" bean. Beans are wired into the JavaScript execution context by name, so referencing them from the controller should be handled as regular in the same manner as accessing a property.
 
 Given a Grails Service, `MyGrailsService`:
 
