@@ -43,7 +43,7 @@ public class JsControllersApplicationContainer {
         Bindings bindings = engine.createBindings();
         engine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
-        register("classpath:/js.controllers/"+APPLICATION_SCRIPT_NAME);
+        load("classpath:/js.controllers/" + APPLICATION_SCRIPT_NAME);
 
         List<String> beanNames = Arrays.asList(grailsApplication.getMainContext().getBeanDefinitionNames());
         for (String beanName : beanNames) {
@@ -52,11 +52,11 @@ public class JsControllersApplicationContainer {
     }
 
     /**
-     * Will evaluate and register a script within the JavaScript execution context.
+     * Will evaluate and load a script within the JavaScript execution context.
      *
      * @param scriptName - Either a classpath reference using the convention "classpath:/path/to/file.js" or an on-disk location such as "/path/to/file.js"
      */
-    public void register(String scriptName) {
+    public void load(String scriptName) {
         if (scriptName.startsWith("classpath:")) {
             try {
                 InputStream inputStream = getClass().getResourceAsStream(scriptName.replaceAll("^classpath:",""));
@@ -65,16 +65,16 @@ public class JsControllersApplicationContainer {
                 throw new RuntimeException(e);
             }
         } else {
-            register(scriptName, getBaseDir());
+            load(scriptName, getBaseDir());
         }
     }
 
     /**
-     * Will evaluate and register a script within the the JavaScript execution context. Additional parameter of specifying a non-standard base directory to find the script
+     * Will evaluate and load a script within the the JavaScript execution context. Additional parameter of specifying a non-standard base directory to find the script
      * @param scriptName
      * @param baseDir
      */
-    public void register(String scriptName, String baseDir) {
+    public void load(String scriptName, String baseDir) {
         try {
             InputStream inputStream = new FileInputStream(new File((baseDir+scriptName)));
             engine.eval(new InputStreamReader(inputStream));
