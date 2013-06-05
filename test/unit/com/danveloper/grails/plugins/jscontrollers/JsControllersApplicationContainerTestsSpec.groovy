@@ -59,4 +59,48 @@ class JsControllersApplicationContainerTestsSpec extends Specification {
         then:
         assert container.getObject("TestContainer") != null
     }
+
+    def "test reloading"() {
+        setup:
+        GrailsApplication grailsApplication = Mock()
+        ApplicationContext applicationContext = Mock()
+        grailsApplication.getMainContext() >> applicationContext
+        applicationContext.getBeanDefinitionNames() >> []
+        def container = Spy(JsControllersApplicationContainer)
+        container.grailsApplication = grailsApplication
+        container.init()
+        def path = new File(".", "/test/unit/com/danveloper/grails/plugins/jscontrollers").absolutePath
+        def scriptName = "/test.js"
+        container.load(scriptName, path)
+
+        when:
+        def called = false
+        container.reloadContainer() >> { called = true }
+        container.reload("${path}${scriptName}")
+
+        then:
+        assert called
+    }
+
+    def "test not reloading stuff that isnt ours"() {
+        setup:
+        GrailsApplication grailsApplication = Mock()
+        ApplicationContext applicationContext = Mock()
+        grailsApplication.getMainContext() >> applicationContext
+        applicationContext.getBeanDefinitionNames() >> []
+        def container = Spy(JsControllersApplicationContainer)
+        container.grailsApplication = grailsApplication
+        container.init()
+        def path = new File(".", "/test/unit/com/danveloper/grails/plugins/jscontrollers").absolutePath
+        def scriptName = "/test.js"
+        container.load(scriptName, path)
+
+        when:
+        def called = false
+        container.reloadContainer() >> { called = true }
+        container.reload("./blah")
+
+        then:
+        assert !called
+    }
 }

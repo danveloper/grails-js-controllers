@@ -131,7 +131,7 @@ public class JsControllersApplicationContainer {
         }
     }
 
-    private void reloadContainer() {
+    protected void reloadContainer() {
         Object container = getObject(JsControllersApplicationContainer.CONTAINER_ID);
         Invocable invocable = getInvocable();
         try {
