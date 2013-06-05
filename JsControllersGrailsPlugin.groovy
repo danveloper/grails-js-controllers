@@ -5,7 +5,7 @@ import com.danveloper.grails.plugins.jscontrollers.JsControllersFilter
 import com.danveloper.grails.plugins.jscontrollers.JsControllersRequestDispatcher
 
 class JsControllersGrailsPlugin {
-    def version = "1.0-SNAPSHOT"
+    def version = "1.0"
 
     def grailsVersion = "2.0 > *"
     def pluginExcludes = [
