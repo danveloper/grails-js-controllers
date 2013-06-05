@@ -186,7 +186,7 @@ Once your library is registered with the `ApplicationContainer`, you can retriev
 ```javascript
 function PaymentController() {
 
-    this.paymentLibrary = $.getBean('payment.library');
+    this.paymentLibrary = ApplicationContainer.getBean('payment.library');
 
     this.index = function(params) {
         return {name: "Payment Controller", payment: this.paymentLibrary.makePayment(123, 1234)};
