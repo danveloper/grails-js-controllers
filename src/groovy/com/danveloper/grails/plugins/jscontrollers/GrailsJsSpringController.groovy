@@ -15,21 +15,21 @@ import javax.servlet.http.HttpServletResponse
  * Date: 6/3/13
  */
 class GrailsJsSpringController implements Controller {
-    JsControllersRequestDispatcher dispatcher;
+    JsControllersRequestDispatcher dispatcher
 
     @Override
-    ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
-        Assert.state(ra instanceof GrailsWebRequest, "Bound RequestContext is not an instance of GrailsWebRequest");
-        GrailsWebRequest webRequest = (GrailsWebRequest)ra;
+    ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) {
+        RequestAttributes ra = RequestContextHolder.getRequestAttributes()
+        Assert.state(ra instanceof GrailsWebRequest, "Bound RequestContext is not an instance of GrailsWebRequest")
+        GrailsWebRequest webRequest = ra
 
         webRequest.with {
             params.put "out", out
 
-            Object result = dispatcher.dispatch(controllerName, actionName, params);
+            Object result = dispatcher.dispatch(controllerName, actionName, params)
 
             if (result != null) {
-                new ModelAndView("/${controllerName}/${actionName}", (Map)result);
+                new ModelAndView("/${controllerName}/${actionName}", (Map)result)
             } else {
                 null
             }
