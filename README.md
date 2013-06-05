@@ -25,7 +25,7 @@ The above example defines a controller and registers it for use within the Grail
 
 Actions should return a JavaScript object representing the model. This return object will be coerced to a Map before being delegated to the view.
 
-But, before your controller is to be reigstered within the `ApplicationContainer`, the script must first be loaded into the JavaScript execution environment. When being loaded, scripts are resolved relative to the `web-app/WEB-INF/js.controllers` directory. Scripts are loaded with the `register(String)` method off of the `JsControllersApplicationContainer` class. Accessing this class must be performed through dependency injection or application context lookup.
+But, before your controller is to be reigstered within the `ApplicationContainer`, the script must first be loaded into the JavaScript execution environment. When being loaded, scripts are resolved relative to the `web-app/WEB-INF/js.controllers` directory. Scripts are loaded with the `load(String)` method off of the `JsControllersApplicationContainer` class. Accessing this class must be performed through dependency injection or application context lookup.
 
 For example, you may load a JavaScript controller at application initialization from your `BootStrap.groovy` class:
 
@@ -36,7 +36,7 @@ class BootStrap {
 
     def init = { servletContext ->
         def container = grailsApplication.mainContext.getBean(JsControllersApplicationContainer)
-        container.register("payment.controller.js")
+        container.load("payment.controller.js")
     }
     def destroy = {
     }
@@ -47,7 +47,7 @@ You can think about registering your controller as a two-step process: the first
 
 This registration process can also be performed dynamically and at runtime. As long as each JavaScript controller registers itself within the `ApplicationContainer`, and follows the conventions outlined above, the controllers will be resolved for otherwise unmapped urls.
 
-Scripts can also be registered from the classpath. Using the **classpath:** prefix to the script name when calling the `register(String)` method will instruct the plugin to resolve the script from the classpath instead of from a path relative to the `web-app/WEB-INF/js.controllers` directory.
+Scripts can also be registered from the classpath. Using the **classpath:** prefix to the script name when calling the `load(String)` method will instruct the plugin to resolve the script from the classpath instead of from a path relative to the `web-app/WEB-INF/js.controllers` directory.
 
 ```groovy 
 class BootStrap {
@@ -56,7 +56,7 @@ class BootStrap {
 
     def init = { servletContext ->
         def container = grailsApplication.mainContext.getBean(JsControllersApplicationContainer)
-        container.register("classpath:controllers/payment.controller.js")
+        container.load("classpath:controllers/payment.controller.js")
     }
     def destroy = {
     }
@@ -156,8 +156,8 @@ class BootStrap {
 
     def init = { servletContext ->
         def container = grailsApplication.mainContext.getBean(JsControllersApplicationContainer)
-        container.register("libs/payment.library.js")
-        container.register("payment.controller.js")
+        container.load("libs/payment.library.js")
+        container.load("payment.controller.js")
     }
     def destroy = {
     }
