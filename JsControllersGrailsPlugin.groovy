@@ -3,9 +3,10 @@ import com.danveloper.grails.plugins.jscontrollers.GrailsJsSpringController
 import com.danveloper.grails.plugins.jscontrollers.JsControllersApplicationContainer
 import com.danveloper.grails.plugins.jscontrollers.JsControllersFilter
 import com.danveloper.grails.plugins.jscontrollers.JsControllersRequestDispatcher
+import org.springframework.context.ApplicationContext
 
 class JsControllersGrailsPlugin {
-    def version = "1.0"
+    def version = "1.1-SNAPSHOT"
 
     def grailsVersion = "2.0 > *"
 
@@ -17,6 +18,8 @@ class JsControllersGrailsPlugin {
     def developers = [ [ name: "Dan Woods", email: "daniel.p.woods@gmail.com", twitter: "@danveloper" ]]
     def issueManagement = [ system: "GITHUB", url: "https://github.com/danveloper/grails-js-controllers/issues" ]
     def scm = [ url: "https://github.com/danveloper/grails-js-controllers" ]
+
+    def watchedResources = ["file:./web-app/**/*.*"]
 
     def doWithWebDescriptor = { webXml ->
         def mappingElement = webXml.'servlet-mapping'
@@ -59,5 +62,13 @@ class JsControllersGrailsPlugin {
         }
 
         jsControllerHandlerMapping(GrailsJsControllersHandlerMapping)
+    }
+
+    def onChange = { event ->
+        ApplicationContext ctx = event.ctx
+        def applicationContainer = ctx.getBean(JsControllersApplicationContainer)
+        if (event.source?.path) {
+            applicationContainer.reload((String)event.source.path)
+        }
     }
 }

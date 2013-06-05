@@ -10,7 +10,9 @@ import javax.script.*;
 import javax.servlet.ServletContext;
 import java.io.*;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: danielwoods
@@ -19,6 +21,7 @@ import java.util.List;
 @Service
 public class JsControllersApplicationContainer {
     public static final String SPRING_BEAN_ID = "jsControllerApplicationContainer";
+    public static final String CONTAINER_ID = "ApplicationContainer";
     public static final String DISPATCHER_ID = "Dispatcher";
 
     public static final String CONTROLLER_DIR = "web-app/WEB-INF/js.controllers";
@@ -32,6 +35,8 @@ public class JsControllersApplicationContainer {
     protected GrailsPluginManager pluginManager;
 
     protected ScriptEngine engine;
+
+    private Map<String, ObservedScript> observedScripts = new HashMap<String, ObservedScript>();
 
     @PostConstruct
     public void init() {
@@ -76,8 +81,18 @@ public class JsControllersApplicationContainer {
      */
     public void load(String scriptName, String baseDir) {
         try {
-            InputStream inputStream = new FileInputStream(new File((baseDir+scriptName)));
+            File script = new File(baseDir+scriptName);
+            InputStream inputStream = new FileInputStream(script);
             engine.eval(new InputStreamReader(inputStream));
+
+            String scriptPath = script.getAbsolutePath();
+
+            observedScripts.put(scriptPath,
+                    new ObservedScript()
+                            .setAbsolutePath(scriptPath)
+                            .setBaseDir(baseDir)
+                            .setScriptName(scriptName));
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (ScriptException e) {
@@ -103,6 +118,31 @@ public class JsControllersApplicationContainer {
         return (Invocable)engine;
     }
 
+    /**
+     * Reloads a given script in the JavaScript execution context
+     * @param scriptName
+     */
+    public void reload(String scriptName) {
+        ObservedScript observedScript = observedScripts.get(scriptName);
+
+        if (observedScript != null) {
+            load(observedScript.scriptName, observedScript.baseDir);
+            reloadContainer();
+        }
+    }
+
+    private void reloadContainer() {
+        Object container = getObject(JsControllersApplicationContainer.CONTAINER_ID);
+        Invocable invocable = getInvocable();
+        try {
+            invocable.invokeMethod(container, "reload", (Object[])null);
+        } catch (NoSuchMethodException e) {
+            //
+        } catch (ScriptException e) {
+            //
+        }
+    }
+
     protected void bindBeanByName(String beanName) {
         try {
             Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
@@ -115,6 +155,34 @@ public class JsControllersApplicationContainer {
             return new File(".", CONTROLLER_DIR).getCanonicalPath()+"/";
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static class ObservedScript {
+        String absolutePath;
+        String scriptName;
+        String baseDir;
+
+        ObservedScript setAbsolutePath(String absolutePath) {
+            this.absolutePath = absolutePath;
+            return this;
+        }
+
+        ObservedScript setScriptName(String scriptName) {
+            this.scriptName = scriptName;
+            return this;
+        }
+
+        ObservedScript setBaseDir(String baseDir) {
+            this.baseDir = baseDir;
+            return this;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return (o instanceof ObservedScript)
+                    && absolutePath != null
+                    && absolutePath.equals(((ObservedScript) o).absolutePath);
         }
     }
 }
