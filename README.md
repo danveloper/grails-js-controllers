@@ -1,6 +1,8 @@
 Grails JavaScript Controller Plugin
 =====================
 
+[![Build Status](https://travis-ci.org/danveloper/grails-js-controllers.png?branch=master)](https://travis-ci.org/danveloper/grails-js-controllers)
+
 This plugin offers developers the ability to write classes in JavaScript, and have Grails respect them as controllers. The default path from which the plugin resolves controllers is the `web-app/WEB-INF/js.controllers` directory. This directory is automatically created at plugin installation time.
 
 Controllers
