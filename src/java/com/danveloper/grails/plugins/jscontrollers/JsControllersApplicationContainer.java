@@ -103,14 +103,14 @@ public class JsControllersApplicationContainer {
         return (Invocable)engine;
     }
 
-    private void bindBeanByName(String beanName) {
+    protected void bindBeanByName(String beanName) {
         try {
             Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
             bindings.put(beanName, grailsApplication.getMainContext().getBean(beanName));
         } catch (Exception e) {} // recover gracefully
     }
 
-    private String getBaseDir() {
+    protected String getBaseDir() {
         try {
             return new File(".", CONTROLLER_DIR).getCanonicalPath()+"/";
         } catch (IOException e) {

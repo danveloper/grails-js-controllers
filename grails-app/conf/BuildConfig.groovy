@@ -16,6 +16,7 @@ grails.project.dependency.resolution = {
         mavenLocal()
     }
     dependencies {
+        test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
     }
 
     plugins {
@@ -23,6 +24,9 @@ grails.project.dependency.resolution = {
               ":release:2.2.1",
               ":rest-client-builder:1.0.3") {
             export = false
+        }
+        test(":spock:0.7") {
+            exclude "spock-grails-support"
         }
     }
 }
