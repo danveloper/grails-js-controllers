@@ -14,12 +14,7 @@ var ApplicationContainer = {
                 this.beans.prototype[name] = ref;
                 break;
             default:
-                if (options.lazy === false) {
-                    this.beans.singleton[name] = ref;
-                } else {
-                    print("making new singleton");
-                    this.beans.singleton[name] = new ref();
-                }
+                this.beans.singleton[name] = new ref();
         }
     },
 
@@ -28,7 +23,7 @@ var ApplicationContainer = {
         if (this.beans.prototype.hasOwnProperty(name)) {
             obj = { scope: 'prototype', ref: this.beans.prototype[name] };
         } else {
-            obj = { scope: 'singleton', ref: this.beans.prototype[name] };
+            obj = { scope: 'singleton', ref: this.beans.singleton[name] };
         }
 
         return obj;
