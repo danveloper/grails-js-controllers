@@ -14,3 +14,6 @@ classes/
 *.zip
 *.zip.*
 target/
+plugin.xml
+*.log
+web-app/WEB-INF
