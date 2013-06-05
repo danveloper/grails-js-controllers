@@ -11,8 +11,7 @@ import javax.servlet.http.HttpServletRequest
  */
 class GrailsJsControllersHandlerMapping extends GrailsControllerHandlerMapping {
     @Override
-    protected Object getHandlerInternal(HttpServletRequest request) throws Exception {
-        return getWebApplicationContext().getBean(GrailsJsSpringController) as Controller;
+    protected Object getHandlerInternal(HttpServletRequest request) {
+        return getWebApplicationContext().getBean(GrailsJsSpringController) as Controller
     }
-
 }
