@@ -47,6 +47,22 @@ You can think about registration as a two-step process: the first step is to reg
 
 This registration process can also be performed dynamically and at runtime. As long as each JavaScript controller registers itself within the `ApplicationContainer`, and follows the conventions outlined above, the controllers will be resolved for otherwise unmapped urls.
 
+Scripts can also be registered from the classpath. Using the **classpath:** prefix to the script name when calling the `register(String)` method will instruct the `ApplicationContainer` to resolve the script from the classpath instead of from a path relative to the `web-app/WEB-INF/js.controllers` directory.
+
+```groovy 
+class BootStrap {
+
+    def grailsApplication
+
+    def init = { servletContext ->
+        def container = grailsApplication.mainContext.getBean(JsControllersApplicationContainer)
+        container.register("classpath:controllers/payment.controller.js")
+    }
+    def destroy = {
+    }
+}
+```
+
 Parameters
 ---
 Each controller action should take a single argument. This argument is a Map of the parameters from the request. Parameters need to be explicitly retrieved and set, as the following example demonstrates.
@@ -131,13 +147,57 @@ Using Libraries
 ---
 The plugin allows you to leverage additional libraries within your JavaScript controllers. It is important to note that the JavaScript execution environment is different from the Grails application. That means that resources that are to be made accessible for your JavaScript controllers ___must___ be explicitly registered.
 
-Registering a script is as s
+Registering a library script is as simple as registering a controller. Scripts can be resolved from either the classpath or from a physical path relative to the `web-app/WEB-INF/js.controllers` path. A good practice may be to store libraries in their own sub-directory.
+
+```groovy
+class BootStrap {
+
+    def grailsApplication
+
+    def init = { servletContext ->
+        def container = grailsApplication.mainContext.getBean(JsControllersApplicationContainer)
+        container.register("libs/payment.library.js")
+        container.register("payment.controller.js")
+    }
+    def destroy = {
+    }
+}
+```
+
+Like controllers, libraries must also be registered with the `ApplicationContainer`.
+
+```javascript
+function PaymentLibrary() {
+    this.makePayment = function(cardnum, expiraion) {
+        // ... do some awesome javascript stuff ...
+        return obj;
+    };
+}
+
+ApplicationContainer.register("payment.library", PaymentLibrary, { scope: 'singleton' });
+```
+
+Classes can be registered with the `ApplicationContainer` in either a **Prototype** or a **Singleton** scope. While controllers should be scoped prototype, it may make sense for your requirement to register instances of your libraries as singletons. The above example demonsrates that process.
+
+Once your library is registered with the `ApplicationContainer`, you can retrieve it for use in your controller through the `getBean(String)` method.
+
+```javascript
+function PaymentController() {
+
+    this.paymentLibrary = $.getBean('payment.library');
+
+    this.index = function(params) {
+        return {name: "Payment Controller", payment: this.paymentLibrary.makePayment(123, 1234)};
+    };
+
+}
+```
 
 Caveats
 ---
 Some caveats to using JavaScript controllers is that the Groovy-enriched objects from the Grails context don't translate so well. That means that trying to leverage things like Domain class dynamic finders or other MOP methods/properties will not work.
 
-The best workaround (and probably best way of handling this in general) is let call a service class method that calls into MOP methods, or retrieves data with GORM.
+The best workaround (and probably the best way of handling this in general) is to call a service class method that calls into MOP methods, or retrieves data with GORM.
 
 License
 ---
