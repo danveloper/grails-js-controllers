@@ -6,7 +6,7 @@ import com.danveloper.grails.plugins.jscontrollers.JsControllersRequestDispatche
 import org.springframework.context.ApplicationContext
 
 class JsControllersGrailsPlugin {
-    def version = "1.1-SNAPSHOT"
+    def version = "1.1"
 
     def grailsVersion = "2.0 > *"
 
