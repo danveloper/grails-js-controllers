@@ -27,6 +27,29 @@ The above example defines a controller and registers it for use within the Grail
 
 Actions should return a JavaScript object representing the model. This return object will be coerced to a Map before being delegated to the view.
 
+Controllers can be optionally initialized by provising an `init` method to the options parameter during registration.
+
+```javascript
+
+function PaymentController {
+
+	this.initialized = false;
+
+	this.init = function() {
+		this.initialized = true;
+	};
+
+	this.index = function(params) {
+		return {foo: 'bar', c: "payment"};
+	};
+}
+
+ApplicationContainer.register("payment.controller", PaymentController, { scope: "prototype", init: "init" });
+
+```
+
+Initialization methods can be used to setup per-instance variables or properties.
+
 But, before your controller is to be reigstered within the `ApplicationContainer`, the script must first be loaded into the JavaScript execution environment. When being loaded, scripts are resolved relative to the `web-app/WEB-INF/js.controllers` directory. Scripts are loaded with the `load(String)` method off of the `JsControllersApplicationContainer` class. Accessing this class must be performed through dependency injection or application context lookup.
 
 For example, you may load a JavaScript controller at application initialization from your `BootStrap.groovy` class:

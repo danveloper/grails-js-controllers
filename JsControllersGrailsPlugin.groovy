@@ -12,7 +12,7 @@ class JsControllersGrailsPlugin {
 
     def title = "JavaScript Controller Plugin"
     def description = 'Plugin to allow for handling controller actions in JavaScript'
-    def documentation = "http://grails.org/plugin/js-controllers"
+    def documentation = "https://github.com/danveloper/grails-js-controllers"
     def license = "APACHE"
     def organization = [ name: "danveloper", url: "http://www.danveloper.com/" ]
     def developers = [ [ name: "Dan Woods", email: "daniel.p.woods@gmail.com", twitter: "@danveloper" ]]

@@ -41,7 +41,7 @@ public class JsControllersApplicationContainer {
     @PostConstruct
     public void init() {
         ScriptEngineManager manager = new ScriptEngineManager();
-        engine = manager.getEngineByName("nashorn") != null ? manager.getEngineByName("rhino") : null;
+        engine = manager.getEngineByName("nashorn");
 
         if (engine == null) engine = manager.getEngineByName("javascript");
 

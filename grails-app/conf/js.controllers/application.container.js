@@ -7,7 +7,7 @@ var ApplicationContainer = {
     registry: {},
 
     register: function(name, ref, options) {
-        if (!this.lookup(name)) {
+        if (this.lookup(name)) {
             throw Error("A bean with name '" + name + "' has already been registered!");
         }
 
@@ -17,6 +17,7 @@ var ApplicationContainer = {
                 break;
             default:
                 this.beans.singleton[name] = new ref();
+                options.scope = "singleton";
         }
 
         this.registry[name] = {ref: ref, options: options};
@@ -24,10 +25,12 @@ var ApplicationContainer = {
 
     lookup: function(name) {
         var obj;
-        if (this.beans.prototype.hasOwnProperty(name)) {
-            obj = { scope: 'prototype', ref: this.beans.prototype[name] };
-        } else {
-            obj = { scope: 'singleton', ref: this.beans.singleton[name] };
+        if (this.registry.hasOwnProperty(name)) {
+            var registryRef = this.registry[name];
+            obj = { ref: registryRef.ref, scope: registryRef.options.scope };
+            if (registryRef.options.hasOwnProperty("init")) {
+                obj.init = registryRef.options.init;
+            }
         }
 
         return obj;
@@ -44,6 +47,11 @@ var ApplicationContainer = {
                 break;
             default:
                 instance = obj.ref;
+        }
+
+        // invoke the init method
+        if (obj.hasOwnProperty("init")) {
+            instance[obj.init]();
         }
 
         return instance;
