@@ -13,13 +13,13 @@ var ApplicationContainer = {
 
         switch (options.scope) {
             case "prototype":
-                this.beans.prototype[name] = ref;
                 break;
             default:
-                this.beans.singleton[name] = new ref();
+                ref = new ref();
                 options.scope = "singleton";
         }
 
+        this.beans[options.scope][name] = ref;
         this.registry[name] = {ref: ref, options: options};
     },
 
